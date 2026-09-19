@@ -46,11 +46,11 @@ sharply in who holds the keys.
 | **Advantages** | **We hold root.** Device-plane management (reboot, restart the browser, health telemetry) is simply an extension of the same on-prem agent we're building for the content plane — one console, no vendor gate, no eligibility risk (see §7). No exposure to Amazon's Fire TV/Vega OS roadmap — this is our hardware, not theirs. Full control of the TLS trust store, so the internal-hostname certificate risk in §9.2 doesn't apply. Full control of Chromium's tuning for rotation — which pages stay warm, memory/GPU flags, a restart watchdog. Full control of boot media, so we can use a USB SSD instead of inheriting whatever storage decision a vendor made. Free, open-source fleet tooling (Ansible) fits Seaway's on-prem, no-subscription posture. Materially cheaper hardware once RAM pricing settles (§2.3), with no recurring vendor CMS or API fee. |
 | **Disadvantages** | We own the whole stack — OS hardening, security patching, kiosk configuration — with no vendor support line if a board fails (though boards are cheap and swappable, which offsets this somewhat). Procurement at 30-unit scale means sourcing boards, cases, power supplies and storage ourselves rather than ordering one SKU. We have to build the OS-level agent commands (reboot, restart, health) ourselves — small in scope, but real scope that the Signage Stick path would have gotten "for free" *if* its API were obtainable. Chromium's own multi-day memory creep is real (§9.3) and needs an operational mitigation (periodic restart) regardless of RAM tier — owning root makes this manageable, but doesn't make it disappear. RAM pricing is genuinely volatile right now (§2.3) — "least expensive" is a moving target that needs a live quote before 30 units are ordered. |
 
-### 2.3 Which Raspberry Pi — the no-compromise floor
+### 2.3 Which Device — the No-Compromise Floor
 
 Rotating through multiple pages, at least one of which is still updating while off-screen, means
 keeping more than one Chromium renderer process warm at once. That sets a real RAM floor, not a
-preference:
+preference — and it applies whichever board family is chosen, ARM or x86:
 
 - Chromium itself warns **"not recommended... on devices with less than 1GB of RAM."** Below that
   is not a judgment call.
@@ -82,6 +82,45 @@ Pi 4 vs Pi 5 price gap at the 4GB tier could be a few dollars or could be invert
 microSD. SD card corruption under 24/7 write load is the most commonly reported real-world failure
 mode for always-on kiosk Pis — unrelated to the rotation requirement, but squarely in "no
 compromise" territory for a 30-unit fleet that has to stay up unattended.
+
+**An x86 alternative: refurbished mini PCs.** This is not a different architecture from the Pi
+recommendation above — same open Linux, same root access, same single console from §7 — it's a
+different board family within the same path. Worth naming because it's a real option, not a
+detour: a used **Chromebox-class mini PC** (for example, an ASUS Chromebox CN60 — Celeron 2955U,
+4GB RAM, 16GB SSD, refurbished — spotted on eBay while researching this plan) clears the 4GB floor
+above and comes with real advantages the Pi doesn't have:
+
+- **x86, not ARM.** Every browser vendor treats x86 as the reference Chromium platform, removing an
+  entire category of "does this dependency have an ARM build" risk that the Pi path never actually
+  hits today, but never has to consider at all here.
+- **Boots from its own onboard SSD already** — sidesteps the USB-SSD purchase and setup step above
+  entirely, since there's no microSD-corruption risk to design around in the first place.
+- **VESA-mountable**, purpose-built for exactly "small box behind a display" — the one physical-
+  install convenience credited to the Signage Stick in §2.1, available here with none of its
+  vendor lock-in.
+
+Set against three real cautions, specific to buying **used** hardware in this class rather than to
+the category itself:
+
+- **16GB storage is tight**, not roomy, for 24/7 Chromium duty (cache growth, logs, OS updates) —
+  the Pi's typical 32GB+ SSD doesn't share this constraint. Workable with discipline (tmpfs for
+  browser cache, log rotation), but confirm whether the exact model's storage module is swappable
+  before committing 30 units to it as-is.
+- **It's secondhand, not new.** A warranty and return window offset the immediate risk, but 30
+  secondhand units carry mixed remaining lifespan, and there's no guarantee an identical
+  replacement is available on the resale market in year two the way reordering a current-production
+  Pi SKU is guaranteed.
+- **Fleet-quantity sourcing is the practical question mark.** A single resale listing rarely holds
+  30 identical units in stock. A bulk-refurb vendor (several exist for exactly this class of retired
+  corporate/school hardware) is the realistic channel for 30 units, not one listing repeated 30
+  times.
+
+Higher idle power draw than a Pi (mini-PC-class CPUs typically run a 15W TDP vs. the Pi's ~5–7W) is
+worth a line in procurement at 30 units, but is not by itself a reason to rule the category out.
+
+**Net:** a genuinely viable alternative device within the recommended architecture — worth a Phase 0
+unit alongside the Pi rather than a blind commitment either way, given the storage and sourcing
+trade-offs above.
 
 ### 2.4 Smart TVs — Considered and Ruled Out
 
