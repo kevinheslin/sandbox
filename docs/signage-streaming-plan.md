@@ -83,7 +83,46 @@ microSD. SD card corruption under 24/7 write load is the most commonly reported 
 mode for always-on kiosk Pis — unrelated to the rotation requirement, but squarely in "no
 compromise" territory for a 30-unit fleet that has to stay up unattended.
 
-### 2.4 Recommendation
+### 2.4 Smart TVs — Considered and Ruled Out
+
+Worth recording explicitly so it isn't re-raised without context later. Two distinct categories
+exist under "smart TV," and only one was seriously considered:
+
+**Consumer smart TVs (Samsung/LG/Vizio/Roku off-the-shelf) — not viable.** Concrete, reported
+failure modes, not hypothetical ones:
+
+- Screens are commonly reported to freeze overnight or go dark after a power cycle, without
+  automatically relaunching the kiosk page — failing the same "survives a weekend untouched"
+  bar the Pi path is held to in Phase 1.
+- No local caching on most models — a network drop blanks the screen rather than falling back to
+  stale content, the exact failure mode the plan's local-rotation-cache (§3.2) exists to prevent.
+- The browser engine is frequently ancient and frozen at whatever shipped with that firmware
+  version, with no user-facing "update browser" control — webOS TV 1.x/2.x, for example, ship
+  Chromium 26 and 34 respectively (2014-era). SSE support and reliably keeping a page warm in the
+  background are not guaranteed on an engine that old.
+- No true kiosk/rotation control — typically one browser window, manually reopened, not several
+  panes kept warm and swapped between.
+- No remote management path at all for consumer sets — not even a gated one like the Signage
+  Stick's API. Reboot and health both require walking up to the TV with the remote.
+
+**Commercial signage displays (Samsung Tizen SSSP4+, LG webOS Signage) — a different product,
+deliberately not chased further.** These are purpose-built signage panels with a firmware-level
+URL Launcher and a real MDM/remote-management layer — not a "smart TV with a browser," a
+signage-specific product line. Architecturally this is the same shape as the Amazon Signage Stick
+option already in §2.1: vendor-hardened device, built-in kiosk mode, gated remote-management API.
+It reimports exactly the class of risk the Pi recommendation exists to avoid (vendor API terms to
+re-verify, no root, unclear whether the URL Launcher can keep multiple rotation panes warm versus
+one static URL), at a real cost premium over a commercial dumb panel. Not evaluated as a third
+option in §2.5 for that reason — it doesn't change the recommendation, only restates the
+Stick-shaped trade-off on different hardware.
+
+**One more point worth carrying into procurement regardless of the above:** buying an actual
+"smart" TV for this is generally the wrong purchase before the software question is even asked —
+it pays for a smart platform, tuner and app store that go entirely unused. A plain commercial or
+signage-grade panel with no smart OS is typically cheaper at the same screen size and pairs
+directly with the Pi this plan already recommends. **Buy dumb screens.**
+
+### 2.5 Recommendation
 
 **Raspberry Pi 4 or 5 (4GB), Chromium kiosk, USB SSD boot.** It removes the two largest risks in
 this plan outright — Remote Management API eligibility (§9.2) and locked-webview TLS trust (§9.2)
@@ -129,7 +168,7 @@ explicitly wherever they apply.
 On the Pi path these are genuinely one console — the same admin UI, the same connection to the
 device, no separate vendor dashboard. §7 covers this in detail. **On the Signage Stick path they
 would have stayed split**, with the device plane gated behind Amazon's API approval — this is the
-structural reason the Pi path was recommended in §2.4.
+structural reason the Pi path was recommended in §2.5.
 
 ### 3.2 The player shell
 
@@ -268,7 +307,7 @@ vendor credential is ever delivered to a display.
 
 ## 7. Device & OS Management — one console for the fleet
 
-This section is specific to the Pi path (§2.4). On the Signage Stick path, everything below would
+This section is specific to the Pi path (§2.5). On the Signage Stick path, everything below would
 instead depend entirely on obtaining Remote Management API access — see §9.2.
 
 ### 7.1 Why one console is achievable here
@@ -349,7 +388,7 @@ edges of the page; timezone and NTP correctness; autoplay policy if any pane con
 
 **Remote Management API eligibility.** Documented as available to "approved CMS providers." We are
 an end customer, not a CMS vendor, and eligibility is genuinely unresolved — this was the single
-largest open risk in the original version of this plan, and it's the main reason §2.4 recommends
+largest open risk in the original version of this plan, and it's the main reason §2.5 recommends
 the Pi instead.
 
 **TLS on a locked-down webview.** The kiosk webview is very unlikely to trust an internal
@@ -470,7 +509,7 @@ Pi path this work is already folded into Phase 2 (§7.1) and there is no separat
 
 ## 12. Open Questions for Seaway
 
-1. **Confirm the hardware path** — this plan recommends the Pi (§2.4); if the Signage Stick is
+1. **Confirm the hardware path** — this plan recommends the Pi (§2.5); if the Signage Stick is
    still preferred, Phase 0 changes accordingly and the risks in §9.2 need direct answers first.
 2. **Which existing internal applications are in the content mix?** Each needs a `frame-ancestors`
    change and a `/display` read-only route — work that belongs in their backlogs, not this one.
