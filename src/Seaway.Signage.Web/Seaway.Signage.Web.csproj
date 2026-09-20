@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Seaway.Signage.Web</RootNamespace>
+
+    <!-- Seaway.AdminUi reads these for the /Admin version display — see design doc §10. -->
+    <Version>0.1.0</Version>
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Seaway.Signage.Domain\Seaway.Signage.Domain.csproj" />
+    <ProjectReference Include="..\Seaway.Signage.Data\Seaway.Signage.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Seaway's shared services — private packages on Seaway's internal NuGet feed, not reachable
+      from the environment that created this scaffold, so these are commented out rather than
+      given invented version numbers. Uncomment and fill in real versions once the feed is wired
+      up (nuget.config isn't set up here for the same reason). See design doc §10 for why each one
+      is included/excluded, and README.md for the full list.
+
+      <PackageReference Include="Seaway.AppSecurity" Version="TODO" />
+      <PackageReference Include="Seaway.Notifications" Version="TODO" />
+      <PackageReference Include="Seaway.Storage" Version="TODO" />
+      <PackageReference Include="Seaway.Portal" Version="TODO" />
+      <PackageReference Include="Seaway.AdminUi" Version="TODO" />
+
+      Deliberately NOT referenced (see design doc §10): Seaway.JobEngine (no Tharstern print jobs
+      here), Seaway.Mailer (deprecated).
+    -->
+  </ItemGroup>
+
+</Project>

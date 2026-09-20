@@ -1,0 +1,27 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+
+# Node
+node_modules/
+npm-debug.log*
+dist/
+
+# Go
+device-agent/signage-agent
+device-agent/*.exe
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Secrets / local config
+appsettings.Development.json
+appsettings.Local.json
+.env
+*.local.json

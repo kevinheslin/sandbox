@@ -1,0 +1,17 @@
+[Unit]
+Description=Seaway Signage kiosk browser
+After=network-online.target
+
+[Service]
+Type=simple
+# openbox + Chromium --kiosk pointed at /play, per design doc §3.2. Exact flags (GPU/memory
+# tuning per IMPLEMENTATION_PLAN.md §4.2's warm-pane strategy) are filled in with the Ansible
+# kiosk role — Phase 1 v0, productionized Phase 2 (milestone 29).
+ExecStart=/usr/local/bin/start-kiosk.sh
+Restart=always
+RestartSec=5
+User=signage-kiosk
+Group=signage-kiosk
+
+[Install]
+WantedBy=graphical.target

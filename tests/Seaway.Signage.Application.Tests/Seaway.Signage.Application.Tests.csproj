@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Named "Application" per the design doc/IMPLEMENTATION_PLAN.md's testing section, even though
+    RotationEngine/ScheduleResolver currently live under Seaway.Signage.Web/Services rather than a
+    separate Application project — see IMPLEMENTATION_PLAN.md §3 note on why Domain stays
+    dependency-free; the same logic-isolation argument applies to these two classes even without a
+    fully separate project yet. Revisit if the Services folder grows enough to warrant its own
+    assembly.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Seaway.Signage.Web\Seaway.Signage.Web.csproj" />
+  </ItemGroup>
+
+</Project>

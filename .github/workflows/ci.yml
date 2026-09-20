@@ -1,0 +1,56 @@
+name: CI
+
+# See IMPLEMENTATION_PLAN.md §6 for the reasoning behind this job split. The .NET job will not
+# succeed until the internal NuGet feed (with the Seaway.* packages) is configured as a secret/
+# variable here — see the csproj comments in src/Seaway.Signage.Web for what's currently
+# commented out and why.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  dotnet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+      - run: dotnet restore
+      - run: dotnet build --no-restore --configuration Release
+      - run: dotnet test --no-build --configuration Release
+      - run: dotnet format --verify-no-changes
+
+  js:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tests/player-shell.tests
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: npm install
+      - run: npm test
+
+  go:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: device-agent
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+      - run: go build ./...
+      - run: go vet ./...
+      - run: go test ./...
+      - name: Cross-compile check (arm64 — the real Pi target)
+        run: GOARCH=arm64 GOOS=linux go build -o /tmp/signage-agent-arm64 ./cmd/signage-agent
+
+  # E2E job (docker-compose + Playwright against a throwaway DB) is added once Phase 1's device
+  # API and Admin UI exist to exercise — see IMPLEMENTATION_PLAN.md §6.

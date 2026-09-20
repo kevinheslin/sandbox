@@ -1,0 +1,12 @@
+{
+  "name": "seaway-signage-player-shell-tests",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "vitest": "^2.1.0",
+    "jsdom": "^25.0.0"
+  }
+}

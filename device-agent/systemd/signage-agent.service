@@ -1,0 +1,25 @@
+[Unit]
+Description=Seaway Signage device agent
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Config (backend URL, display ID, device token) is deployed by Ansible alongside this unit —
+# see /ansible/roles/kiosk (Phase 2, IMPLEMENTATION_PLAN.md milestone 29).
+EnvironmentFile=/etc/seaway-signage/agent.env
+ExecStart=/usr/local/bin/signage-agent \
+  --backend-url=${SIGNAGE_BACKEND_URL} \
+  --display-id=${SIGNAGE_DISPLAY_ID} \
+  --device-token=${SIGNAGE_DEVICE_TOKEN}
+Restart=always
+RestartSec=5
+
+# Narrowly scoped — see IMPLEMENTATION_PLAN.md §4.3. This unit itself runs unprivileged; the
+# specific systemctl/reboot commands it needs are granted via a dedicated sudoers entry, not by
+# running the agent as root.
+User=signage-agent
+Group=signage-agent
+
+[Install]
+WantedBy=multi-user.target

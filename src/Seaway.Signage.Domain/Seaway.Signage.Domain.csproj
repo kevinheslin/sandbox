@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Deliberately dependency-free: no EF Core, no ASP.NET Core references. RotationEngine and
+    ScheduleResolver (in Seaway.Signage.Web/Services) operate on these POCOs, which is what lets
+    that logic be unit tested without a database in the loop. See IMPLEMENTATION_PLAN.md §3.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Seaway.Signage.Domain</RootNamespace>
+  </PropertyGroup>
+
+</Project>

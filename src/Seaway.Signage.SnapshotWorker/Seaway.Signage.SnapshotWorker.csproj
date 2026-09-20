@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <!--
+    Separate deployable from Seaway.Signage.Web — see IMPLEMENTATION_PLAN.md §3 for why:
+    resource-heavy (headless Chromium), operationally independent, holds vendor credentials that
+    don't need to be reachable from device-facing endpoints, needs none of
+    AppSecurity/Portal/AdminUi.
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>Seaway.Signage.SnapshotWorker</RootNamespace>
+    <UserSecretsId>seaway-signage-snapshot-worker</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Seaway.Signage.Domain\Seaway.Signage.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Real renderer dependency, added once Phase 3 (milestone 33) picks this up. -->
+    <!-- <PackageReference Include="Microsoft.Playwright" Version="TODO" /> -->
+  </ItemGroup>
+
+</Project>

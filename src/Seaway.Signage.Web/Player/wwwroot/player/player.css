@@ -1,0 +1,25 @@
+/*
+  Signage type-scale variant of seaway-app-style: viewing distance is 3-10 metres, not 50cm, so
+  this needs larger type, heavier weights, higher-contrast pairings than the Admin UI. Not
+  defined yet — see design doc §10.2 and IMPLEMENTATION_PLAN.md milestone 35 (Phase 3).
+*/
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  font-family: sans-serif; /* placeholder — real type choices land with milestone 35 */
+}
+
+#unclaimed-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
